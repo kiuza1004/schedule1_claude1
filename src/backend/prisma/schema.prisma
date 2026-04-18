@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Enums
+// ============================================
+
+/// 일정 상태
+enum ScheduleStatus {
+  plan
+  in_progress
+  completed
+}
+
+/// 우선순위
+enum Priority {
+  low
+  medium
+  high
+}
+
+// ============================================
+// Models
+// ============================================
+
+/// Schedule 항목
+model Schedule {
+  /// 고유 식별자 (UUID)
+  id String @id @default(cuid())
+
+  /// 개발 타이틀 (1-100자)
+  title String @db.VarChar(100)
+
+  /// 개발 내용 설명 (1-1000자)
+  description String @db.VarChar(1000)
+
+  /// AI 프롬프트 (최대 5000자)
+  prompt String @db.Text
+
+  /// 개발 시기
+  startDate DateTime
+
+  /// 진행 상태
+  status ScheduleStatus @default(plan)
+
+  /// 우선순위
+  priority Priority @default(medium)
+
+  /// 태그 목록 (JSON 형식)
+  tags String? @db.Text
+
+  /// 생성 일시
+  createdAt DateTime @default(now())
+
+  /// 수정 일시
+  updatedAt DateTime @updatedAt
+
+  // ============================================
+  // 인덱스
+  // ============================================
+
+  /// 날짜별 조회 성능
+  @@index([startDate])
+
+  /// 상태별 필터링
+  @@index([status])
+
+  /// 우선순위별 정렬
+  @@index([priority])
+
+  /// 복합 인덱스
+  @@index([startDate, status])
+}
