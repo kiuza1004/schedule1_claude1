@@ -7,7 +7,6 @@ import { corsMiddleware } from "./middleware/cors.js";
 import {
   errorHandler,
   notFoundHandler,
-  AppError,
 } from "./middleware/errorHandler.js";
 import { logger } from "./utils/logger.js";
 import { sendSuccess } from "./utils/response.js";
@@ -31,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 요청 로깅
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   logger.info(`${req.method} ${req.path}`, {
     query: Object.keys(req.query).length > 0 ? req.query : undefined,
   });
@@ -43,7 +42,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // ============================================
 
 // 헬스 체크
-app.get("/health", (req: Request, res: Response) => {
+app.get("/health", (_req: Request, res: Response) => {
   sendSuccess(res, 200, { status: "ok" }, "서버가 정상 작동 중입니다");
 });
 
@@ -66,7 +65,7 @@ app.use(errorHandler);
 
 async function startServer() {
   try {
-    app.listen(PORT, HOST, () => {
+    app.listen(Number(PORT), HOST, () => {
       logger.info(`✅ 서버가 시작되었습니다`, {
         url: `http://${HOST}:${PORT}`,
         env: process.env.NODE_ENV,
@@ -90,7 +89,7 @@ process.on("uncaughtException", (error) => {
   process.exit(1);
 });
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason, _promise) => {
   logger.error("처리되지 않은 Promise rejection", reason);
   process.exit(1);
 });

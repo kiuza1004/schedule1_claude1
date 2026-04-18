@@ -2,8 +2,8 @@
  * 메인 레이아웃 - 전체 앱 통합
  */
 
-import React, { useState, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
+import { useState } from "react";
 import Calendar from "./Calendar.js";
 import ScheduleForm from "./ScheduleForm.js";
 import Search from "./Search.js";
@@ -19,7 +19,7 @@ import {
 
 type ModalState = { type: "delete" | "update"; data: Schedule } | null;
 
-const Layout: React.FC = () => {
+const Layout = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showForm, setShowForm] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
@@ -28,7 +28,7 @@ const Layout: React.FC = () => {
   const store = useScheduleStore();
 
   // 모든 일정 조회
-  const { data: allSchedulesData, isLoading: isLoadingSchedules } = useQuery(
+  const { isLoading: isLoadingSchedules } = useQuery(
     "schedules",
     () => scheduleApi.getAll(1, 100),
     {
@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
 
   // 일정 삭제
   const deleteMutation = useMutation(scheduleApi.delete, {
-    onSuccess: (data, id) => {
+    onSuccess: (_data, id) => {
       store.deleteSchedule(id);
       setModalState(null);
       alert("일정이 삭제되었습니다!");

@@ -3,7 +3,7 @@
  */
 
 import { create } from "zustand";
-import { Schedule, ScheduleStatus, Priority, SearchFilters } from "../types/index.js";
+import { Schedule, SearchFilters } from "../types/index.js";
 
 export interface ScheduleStore {
   // 상태

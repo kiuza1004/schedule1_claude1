@@ -12,15 +12,12 @@ import {
 import {
   sendSuccess,
   sendPaginated,
-  sendError,
   sendNotFound,
 } from "../utils/response.js";
-import { AppError } from "../middleware/errorHandler.js";
 import { logger } from "../utils/logger.js";
 import {
   ScheduleStatusEnum,
   PriorityEnum,
-  ScheduleQueryParams,
   ScheduleStats,
 } from "../types/index.js";
 
@@ -91,11 +88,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     if (sort === "date") {
       orderBy.startDate = order;
     } else if (sort === "priority") {
-      const priorityOrder = {
-        high: 3,
-        medium: 2,
-        low: 1,
-      };
       orderBy._relevance = { search: "", sort: order };
     } else if (sort === "status") {
       orderBy.status = order;
@@ -140,7 +132,8 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (!schedule) {
-      return sendNotFound(res, "일정을 찾을 수 없습니다");
+      sendNotFound(res, "일정을 찾을 수 없습니다");
+      return;
     }
 
     logger.info("일정 상세 조회", { id });
@@ -276,7 +269,8 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (!existingSchedule) {
-      return sendNotFound(res, "일정을 찾을 수 없습니다");
+      sendNotFound(res, "일정을 찾을 수 없습니다");
+      return;
     }
 
     // 수정
@@ -317,7 +311,8 @@ router.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>
     });
 
     if (!schedule) {
-      return sendNotFound(res, "일정을 찾을 수 없습니다");
+      sendNotFound(res, "일정을 찾을 수 없습니다");
+      return;
     }
 
     await prisma.schedule.delete({
@@ -335,7 +330,7 @@ router.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>
 // 8. GET /schedules/stats - 통계 조회
 // ============================================
 
-router.get("/stats/overview", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/stats/overview", async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -389,15 +384,15 @@ router.get("/stats/overview", async (req: Request, res: Response, next: NextFunc
     const stats: ScheduleStats = {
       total,
       byStatus: {
-        plan: byStatus.find((s) => s.status === "plan")?._count || 0,
+        plan: byStatus.find((s: any) => s.status === "plan")?._count || 0,
         in_progress:
-          byStatus.find((s) => s.status === "in_progress")?._count || 0,
-        completed: byStatus.find((s) => s.status === "completed")?._count || 0,
+          byStatus.find((s: any) => s.status === "in_progress")?._count || 0,
+        completed: byStatus.find((s: any) => s.status === "completed")?._count || 0,
       },
       byPriority: {
-        low: byPriority.find((p) => p.priority === "low")?._count || 0,
-        medium: byPriority.find((p) => p.priority === "medium")?._count || 0,
-        high: byPriority.find((p) => p.priority === "high")?._count || 0,
+        low: byPriority.find((p: any) => p.priority === "low")?._count || 0,
+        medium: byPriority.find((p: any) => p.priority === "medium")?._count || 0,
+        high: byPriority.find((p: any) => p.priority === "high")?._count || 0,
       },
       thisMonth,
       thisWeek,

@@ -3,7 +3,7 @@
  */
 
 import axios, { AxiosInstance } from "axios";
-import { Schedule, CreateScheduleInput, SearchFilters } from "../types/index.js";
+import { CreateScheduleInput, SearchFilters } from "../types/index.js";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: "/api",

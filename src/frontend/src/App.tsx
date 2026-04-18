@@ -2,7 +2,6 @@
  * 메인 App 컴포넌트
  */
 
-import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Layout from "./components/Layout.js";
 

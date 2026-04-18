@@ -38,7 +38,7 @@ body {
 }
 
 .textarea {
-  @apply input resize-vertical;
+  @apply input resize-y;
 }
 
 /* 카드 스타일 */

@@ -26,7 +26,7 @@ export function errorHandler(
   error: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void {
   logger.error("Error occurred", {
     path: req.path,
@@ -54,7 +54,7 @@ export function errorHandler(
  */
 export function notFoundHandler(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void {
   const error = new AppError(

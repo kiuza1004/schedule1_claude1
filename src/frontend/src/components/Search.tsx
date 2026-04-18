@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from "react";
-import { Schedule, ScheduleStatus, Priority, SearchFilters } from "../types/index.js";
+import { ScheduleStatus, Priority, SearchFilters } from "../types/index.js";
 
 interface SearchProps {
   onSearch: (filters: SearchFilters) => void;
